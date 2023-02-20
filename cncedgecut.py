@@ -8,6 +8,7 @@ mbd_default = 1.0		# Milling bit diameter in mm (to make corrections!)
 mbs_default = 0.25		# Milling bit step in mm
 tbs_default = 1.0		# Tab size in mm
 tbl_num_default = 4		# Max number of tabs
+pct_default = 1.6		# PCB Thickness
 
 
 parser = argparse.ArgumentParser(description='Create CNC commands for cutting polygons in PCB boards')
@@ -23,6 +24,9 @@ parser.add_argument('--mbs',type=float,default=mbs_default,
 
 parser.add_argument('--tbs',type=float,default=tbs_default,
                     help='Tab size in mm')
+
+parser.add_argument('--pct',type=float,default=pct_default,
+                    help='PCB thickness in mm')
 
 parser.add_argument('--tbl',type=int,nargs=4,
                     help='List of segments where tabs wil be placed')
@@ -50,6 +54,7 @@ while i < (len(args.points)/2):
 print("Milling bit diameter:",args.mbd)
 print("Milling bit step:    ",args.mbs)
 print("Tab size:            ",args.tbs)
+print("PCB thickness:       ",args.pct)
 print("Number of points:    ",len(args.points))
 print("Tab segment list:    ",args.tbl)
 print("List of points:",args.points)
