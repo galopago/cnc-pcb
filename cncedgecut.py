@@ -32,6 +32,7 @@ parser.add_argument('--tbl',type=int,nargs=4,
                     help='List of segments where tabs wil be placed')
 
 args = parser.parse_args()
+
 #funcs defs
 def drb_correction(point,mbitdi):
 	if point < 0:
@@ -39,6 +40,10 @@ def drb_correction(point,mbitdi):
 	else:
 		point = point + (mbitdi/2)	
 	return point
+
+fd = open("milling.nc", "w")
+
+
 	
 #Checking for even number of points (pairs!)
 if (len(args.points) % 2) != 0: parser.error("Invalid number of points")
@@ -74,12 +79,12 @@ while i < seglistlength:
 	i += 1
 
 #Startup code milling speed
-print(f"G21 G90 G94")	
-print(f"F250")	
-print(f"G1 Z1")	
-print(f"M3")
-print(f"S1000")
-print(f"G1 Z1")	
+print(f"G21 G90 G94",file=fd)	
+print(f"F250",file=fd)	
+print(f"G1 Z1",file=fd)	
+print(f"M3",file=fd)
+print(f"S1000",file=fd)
+print(f"G1 Z1",file=fd)	
 
 #processing segments
 zmill = 0.0;
@@ -110,54 +115,54 @@ while zmill < pcbtick:
 			# Tab in horizontal line
 			if ya == yb:
 				midx = (xa + xb) / 2.0
-				print(f"G1 X{xa} Y{ya}")
-				print(f"G1 Z{zmill}")
+				print(f"G1 X{xa} Y{ya}",file=fd)
+				print(f"G1 Z{zmill}",file=fd)
 				# direction of movement
 				if xa < xb:
-					print(f"G1 X{midx-(mbitdia/2.0)} Y{ya}")
-					print(f"G1 Z{1}")
-					print(f"G1 X{midx+(mbitdia/2.0)} Y{ya}")
-					print(f"G1 Z{zmill}")
-					print(f"G1 X{xb} Y{yb}")
+					print(f"G1 X{midx-(mbitdia/2.0)} Y{ya}",file=fd)
+					print(f"G1 Z{1}",file=fd)
+					print(f"G1 X{midx+(mbitdia/2.0)} Y{ya}",file=fd)
+					print(f"G1 Z{zmill}",file=fd)
+					print(f"G1 X{xb} Y{yb}",file=fd)
 				else:
-					print(f"G1 X{midx+(mbitdia/2.0)} Y{ya}")
-					print(f"G1 Z{1}")
-					print(f"G1 X{midx-(mbitdia/2.0)} Y{ya}")
-					print(f"G1 Z{zmill}")
-					print(f"G1 X{xb} Y{yb}")
+					print(f"G1 X{midx+(mbitdia/2.0)} Y{ya}",file=fd)
+					print(f"G1 Z{1}",file=fd)
+					print(f"G1 X{midx-(mbitdia/2.0)} Y{ya}",file=fd)
+					print(f"G1 Z{zmill}",file=fd)
+					print(f"G1 X{xb} Y{yb}",file=fd)
 			# Tab in vertical line
 			if xa == xb:
 				midy = (ya + yb) / 2.0
-				print(f"G1 X{xa} Y{ya}")
+				print(f"G1 X{xa} Y{ya}",file=fd)
 				print(f"G1 Z{zmill}")
 				# direction of movement
 				if ya < yb:
-					print(f"G1 X{xa} Y{midy-(mbitdia/2.0)}")
-					print(f"G1 Z{1}")
-					print(f"G1 X{xa} Y{midy+(mbitdia/2.0)}")
-					print(f"G1 Z{zmill}")
-					print(f"G1 X{xb} Y{yb}")
+					print(f"G1 X{xa} Y{midy-(mbitdia/2.0)}",file=fd)
+					print(f"G1 Z{1}",file=fd)
+					print(f"G1 X{xa} Y{midy+(mbitdia/2.0)}",file=fd)
+					print(f"G1 Z{zmill}",file=fd)
+					print(f"G1 X{xb} Y{yb}",file=fd)
 				else:
-					print(f"G1 X{xa} Y{midy+(mbitdia/2.0)}")
-					print(f"G1 Z{1}")
-					print(f"G1 X{xa} Y{midy-(mbitdia/2.0)}")
-					print(f"G1 Z{zmill}")
-					print(f"G1 X{xb} Y{yb}")
+					print(f"G1 X{xa} Y{midy+(mbitdia/2.0)}",file=fd)
+					print(f"G1 Z{1}",file=fd)
+					print(f"G1 X{xa} Y{midy-(mbitdia/2.0)}",file=fd)
+					print(f"G1 Z{zmill}",file=fd)
+					print(f"G1 X{xb} Y{yb}",file=fd)
 																
 		else:		    		
     		# NO tabs
-			print(f"G1 X{xa} Y{ya}")
-			print(f"G1 Z{zmill}")
-			print(f"G1 X{xb} Y{yb}")
+			print(f"G1 X{xa} Y{ya}",file=fd)
+			print(f"G1 Z{zmill}",file=fd)
+			print(f"G1 X{xb} Y{yb}",file=fd)
 		i += 1	 
 	zmill = zmill + zstep
 
 #finishing going to origin and stop mill
-print(f"G1 Z1")	
-print(f"G1 X0 Y0")	
-print(f"S0")	
-print(f"M5")
-
+print(f"G1 Z1",file=fd)	
+print(f"G1 X0 Y0",file=fd)	
+print(f"S0",file=fd)	
+print(f"M5",file=fd)
+fd.close()
 
 	
 	
