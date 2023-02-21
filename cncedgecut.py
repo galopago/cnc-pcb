@@ -59,14 +59,42 @@ print("Number of points:    ",len(args.points))
 print("Tab segment list:    ",args.tbl)
 print("List of points:",args.points)
 print("Segment list:")
-length = len(segmentlist)
+seglistlength = len(segmentlist)
 i = 0
   
-while i < length:
-    print("S",i+1,":",segmentlist[i])
-    i += 1
+while i < seglistlength:
+	print(f"S{i+1}:{segmentlist[i]}")
+	i += 1
 
+#Startup code milling speed
+print(f"G21 G90 G94")	
+print(f"F250")	
+print(f"G1 Z1")	
+print(f"M3")
+print(f"S1000")
+print(f"G1 Z1")	
 
+#processing segments
+zmill = 0.0;
+zstep = args.mbs
+pcbtick = args.pct
 
+while zmill < pcbtick:
+	print(f"zmill:{zmill}")
+	i = 0
+	while i < seglistlength:
+		print(f"S{i+1}:{segmentlist[i]}")
+		if i == 0:
+  			print(f"G1 X{segmentlist[i][0]} Y{segmentlist[i][1]}")
+  			print(f"G1 Z{zmill}")
+  			print(f"G1 X{segmentlist[i][2]} Y{segmentlist[i][3]}")
+		else:
+			print(f"G1 X{segmentlist[i][2]} Y{segmentlist[i][3]}")	
+		i += 1	 
+	zmill = zmill + zstep
 
-
+#finishing going to origin and stop mill
+print(f"G1 Z1")	
+print(f"G1 X0 Y0")	
+print(f"S0")	
+print(f"M5")
