@@ -32,7 +32,14 @@ parser.add_argument('--tbl',type=int,nargs=4,
                     help='List of segments where tabs wil be placed')
 
 args = parser.parse_args()
-
+#funcs defs
+def drb_correction(point,mbitdi):
+	if point < 0:
+		point = point - (mbitdi/2)
+	else:
+		point = point + (mbitdi/2)	
+	return point
+	
 #Checking for even number of points (pairs!)
 if (len(args.points) % 2) != 0: parser.error("Invalid number of points")
 
@@ -78,18 +85,70 @@ print(f"G1 Z1")
 zmill = 0.0;
 zstep = args.mbs
 pcbtick = args.pct
+mbitdia = args.mbd
+segstbl = args.tbl
 
 while zmill < pcbtick:
-	print(f"zmill:{zmill}")
+	#print(f"zmill:{zmill}")
 	i = 0
 	while i < seglistlength:
-		print(f"S{i+1}:{segmentlist[i]}")
-		if i == 0:
-  			print(f"G1 X{segmentlist[i][0]} Y{segmentlist[i][1]}")
-  			print(f"G1 Z{zmill}")
-  			print(f"G1 X{segmentlist[i][2]} Y{segmentlist[i][3]}")
-		else:
-			print(f"G1 X{segmentlist[i][2]} Y{segmentlist[i][3]}")	
+		#print(f"S{i+1}:{segmentlist[i]}")
+
+		#Drilling bit corrections only valid for 0,90,180, 270 degree segments !!!
+		xa=drb_correction(segmentlist[i][0],mbitdia)
+		ya=drb_correction(segmentlist[i][1],mbitdia)
+			
+		xb=drb_correction(segmentlist[i][2],mbitdia)
+		yb=drb_correction(segmentlist[i][3],mbitdia)
+		
+		
+		# searchig for a tab in this segment
+		if (i+1) in segstbl:
+			print(F"The segment {i+1} have a tab")
+			# calculating tabs
+    
+			# Tab in horizontal line
+			if ya == yb:
+				midx = (xa + xb) / 2.0
+				print(f"G1 X{xa} Y{ya}")
+				print(f"G1 Z{zmill}")
+				# direction of movement
+				if xa < xb:
+					print(f"G1 X{midx-(mbitdia/2.0)} Y{ya}")
+					print(f"G1 Z{1}")
+					print(f"G1 X{midx+(mbitdia/2.0)} Y{ya}")
+					print(f"G1 Z{zmill}")
+					print(f"G1 X{xb} Y{yb}")
+				else:
+					print(f"G1 X{midx+(mbitdia/2.0)} Y{ya}")
+					print(f"G1 Z{1}")
+					print(f"G1 X{midx-(mbitdia/2.0)} Y{ya}")
+					print(f"G1 Z{zmill}")
+					print(f"G1 X{xb} Y{yb}")
+			# Tab in vertical line
+			if xa == xb:
+				midy = (ya + yb) / 2.0
+				print(f"G1 X{xa} Y{ya}")
+				print(f"G1 Z{zmill}")
+				# direction of movement
+				if ya < yb:
+					print(f"G1 X{xa} Y{midy-(mbitdia/2.0)}")
+					print(f"G1 Z{1}")
+					print(f"G1 X{xa} Y{midy+(mbitdia/2.0)}")
+					print(f"G1 Z{zmill}")
+					print(f"G1 X{xb} Y{yb}")
+				else:
+					print(f"G1 X{xa} Y{midy+(mbitdia/2.0)}")
+					print(f"G1 Z{1}")
+					print(f"G1 X{xa} Y{midy-(mbitdia/2.0)}")
+					print(f"G1 Z{zmill}")
+					print(f"G1 X{xb} Y{yb}")
+																
+		else:		    		
+    		# NO tabs
+			print(f"G1 X{xa} Y{ya}")
+			print(f"G1 Z{zmill}")
+			print(f"G1 X{xb} Y{yb}")
 		i += 1	 
 	zmill = zmill + zstep
 
@@ -98,3 +157,7 @@ print(f"G1 Z1")
 print(f"G1 X0 Y0")	
 print(f"S0")	
 print(f"M5")
+
+
+	
+	
