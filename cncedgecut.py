@@ -1,11 +1,11 @@
-# Script to generate CNC code for cutting  PCB boards.Only support straight (not curved) segments and 0,90,180,270 degrees angles only !!
-# supporting tabs allowed, only one per segment in the middle
-# 
-# required parameters: point list (at least 3 pairs) and output file. All other parameters have default values
-#
-# Example:
-# Mill a rectangle with coordenates X,Y upper left -10.0 20.0 , upper right 10.0 20.0 lower right -20.0 10.0 and lower left
-# tab size 1.5 mm, milling bit diameter 1 mm, tabs in segments 2 and 4 , CNC commands stores in out.nc file
+# Corrected grammar:
+
+# Script to generate CNC code for cutting PCB boards. Only supports straight (not curved) segments and angles of 0, 90, 180, and 270 degrees are allowed! Supporting tabs are allowed, but only one per segment in the middle.
+
+#The required parameters are a point list (with at least 3 pairs) and an output file. All other parameters have default values.
+
+#Example:
+#To mill a rectangle with coordinates X,Y of the upper left (-10.0, 20.0), upper right (10.0, 20.0), lower right (-20.0, 10.0), and lower left (-20.0, -10.0), use a tab size of 1.5 mm and a milling bit diameter of 1 mm. Add tabs in segments 2 and 4, and store the CNC commands in the out.nc file.
 #
 # python3 cncedgecut.py  --tbs 1.5 --mbd 1 --tbl 2 4 --dfi out.nc --pts -10.0 20.0 10.0 20.0 10.0 -20.0 -10.0 -20.0 -10.0 20.0
 
@@ -19,6 +19,7 @@ mms_default = 250		# Milling movement speed
 sps_default = 1000		# Spindle speed
 tbs_default = 1.0		# Tab size in mm
 pct_default = 1.6		# PCB Thickness
+tbl_default = []		# Empty list
 
 
 parser = argparse.ArgumentParser(description='Create CNC commands for cutting polygons in PCB boards')
@@ -47,7 +48,7 @@ parser.add_argument('--tbs',type=float,default=tbs_default,
 parser.add_argument('--pct',type=float,default=pct_default,
                     help='PCB thickness in mm')
 
-parser.add_argument('--tbl',type=int,nargs='+',
+parser.add_argument('--tbl',type=int,nargs='+',default=tbl_default,
                     help='List of segments where tabs wil be placed')
 
 
@@ -96,7 +97,8 @@ print("PCB thickness:         ",args.pct)
 print("Number of points:      ",len(args.pts))
 print("Tab segment list:      ",args.tbl)
 print("List of points:        ",args.pts)
-print("Segment list:")
+print("Segment list:          ",segmentlist)
+
 seglistlength = len(segmentlist)
 i = 0
   
@@ -193,6 +195,7 @@ print(f"G1 Z1",file=fd)
 print(f"G1 X0 Y0",file=fd)	
 print(f"S0",file=fd)	
 print(f"M5",file=fd)
+print(f"Finished!")	
 fd.close()
 
 	
