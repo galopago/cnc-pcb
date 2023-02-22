@@ -12,7 +12,7 @@ To mill a rectangle with coordinates X,Y of the upper left (-10.0, 20.0), upper 
 python3 cncedgecut.py  --tbs 1.5 --mbd 1 --tbl 2 4 --dfi out.nc --pts -10.0 20.0 10.0 20.0 10.0 -20.0 -10.0 -20.0 -10.0 20.0
 ~~~
 
-
+~~~
 usage: cncedgecut.py [-h] --pts PTS [PTS ...] --dfi DFI [--mbd MBD] [--mbs MBS] [--mms MMS] [--sps SPS]
                      [--tbs TBS] [--pct PCT] [--tbl TBL [TBL ...]]
 
@@ -30,3 +30,4 @@ optional arguments:
   --tbs TBS            Tab size in mm
   --pct PCT            PCB thickness in mm
   --tbl TBL [TBL ...]  List of segments where tabs wil be placed
+~~~
