@@ -1,15 +1,23 @@
 # Script to generate CNC code for cutting  PCB boards.Only support straight (not curved) segments and 0,90,180,270 degrees angles only !!
-# supporting tabs allowed, only one per segment
+# supporting tabs allowed, only one per segment in the middle
+# 
+# required parameters: point list (at least 3 pairs) and output file. All other parameters have default values
+#
+# Example:
+# Mill a rectangle with coordenates X,Y upper left -10.0 20.0 , upper right 10.0 20.0 lower right -20.0 10.0 and lower left
+# tab size 1.5 mm, milling bit diameter 1 mm, tabs in segments 2 and 4 , CNC commands stores in out.nc file
+#
+# python3 cncedgecut.py  --tbs 1.5 --mbd 1 --tbl 2 4 --dfi out.nc --pts -10.0 20.0 10.0 20.0 10.0 -20.0 -10.0 -20.0 -10.0 20.0
+
 
 import argparse
 
-#default values for optional paameters
+#default values for optional parameters
 mbd_default = 1.0		# Milling bit diameter in mm (to make corrections!)
 mbs_default = 0.25		# Milling bit step in mm
 mms_default = 250		# Milling movement speed
 sps_default = 1000		# Spindle speed
 tbs_default = 1.0		# Tab size in mm
-tbl_num_default = 4		# Max number of tabs
 pct_default = 1.6		# PCB Thickness
 
 
@@ -142,15 +150,15 @@ while zmill < pcbtick:
 				print(f"G1 Z{-1*zmill}",file=fd)
 				# direction of movement
 				if xa < xb:
-					print(f"G1 X{midx-(tabsize/2.0)} Y{ya}",file=fd)
+					print(f"G1 X{midx-(tabsize/2.0)-(mbitdia/2.0)} Y{ya}",file=fd)
 					print(f"G1 Z{1}",file=fd)
-					print(f"G1 X{midx+(tabsize/2.0)} Y{ya}",file=fd)
+					print(f"G1 X{midx+(tabsize/2.0)+(mbitdia/2.0)} Y{ya}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
 				else:
-					print(f"G1 X{midx+(tabsize/2.0)} Y{ya}",file=fd)
+					print(f"G1 X{midx+(tabsize/2.0)+(mbitdia/2.0)} Y{ya}",file=fd)
 					print(f"G1 Z{1}",file=fd)
-					print(f"G1 X{midx-(tabsize/2.0)} Y{ya}",file=fd)
+					print(f"G1 X{midx-(tabsize/2.0)-(mbitdia/2.0)} Y{ya}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
 			# Tab in vertical line
@@ -160,15 +168,15 @@ while zmill < pcbtick:
 				print(f"G1 Z{-1*zmill}")
 				# direction of movement
 				if ya < yb:
-					print(f"G1 X{xa} Y{midy-(tabsize/2.0)}",file=fd)
+					print(f"G1 X{xa} Y{midy-(tabsize/2.0)-(mbitdia/2.0)}",file=fd)
 					print(f"G1 Z{1}",file=fd)
-					print(f"G1 X{xa} Y{midy+(tabsize/2.0)}",file=fd)
+					print(f"G1 X{xa} Y{midy+(tabsize/2.0)+(mbitdia/2.0)}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
 				else:
-					print(f"G1 X{xa} Y{midy+(tabsize/2.0)}",file=fd)
+					print(f"G1 X{xa} Y{midy+(tabsize/2.0)+(mbitdia/2.0)}",file=fd)
 					print(f"G1 Z{1}",file=fd)
-					print(f"G1 X{xa} Y{midy-(tabsize/2.0)}",file=fd)
+					print(f"G1 X{xa} Y{midy-(tabsize/2.0)-(mbitdia/2.0)}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
 																
