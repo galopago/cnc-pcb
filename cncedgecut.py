@@ -1,11 +1,9 @@
-# Corrected grammar:
-
 # Script to generate CNC code for cutting PCB boards. Only supports straight (not curved) segments and angles of 0, 90, 180, and 270 degrees are allowed! Supporting tabs are allowed, but only one per segment in the middle.
 
-#The required parameters are a point list (with at least 3 pairs) and an output file. All other parameters have default values.
+# The required parameters are a point list (with at least 3 pairs) and an output file. All other parameters have default values.
 
-#Example:
-#To mill a rectangle with coordinates X,Y of the upper left (-10.0, 20.0), upper right (10.0, 20.0), lower right (-20.0, 10.0), and lower left (-20.0, -10.0), use a tab size of 1.5 mm and a milling bit diameter of 1 mm. Add tabs in segments 2 and 4, and store the CNC commands in the out.nc file.
+# Example:
+# To mill a rectangle with coordinates X,Y of the upper left (-10.0, 20.0), upper right (10.0, 20.0), lower right (-20.0, 10.0), and lower left (-20.0, -10.0), use a tab size of 1.5 mm and a milling bit diameter of 1 mm. Add tabs in segments 2 and 4, and store the CNC commands in the out.nc file.
 #
 # python3 cncedgecut.py  --tbs 1.5 --mbd 1 --tbl 2 4 --dfi out.nc --pts -10.0 20.0 10.0 20.0 10.0 -20.0 -10.0 -20.0 -10.0 20.0
 
