@@ -11,11 +11,12 @@
 import argparse
 
 #default values for optional parameters
-mbd_default = 1.0		# Milling bit diameter in mm (to make corrections!)
+mbd_default = 0.0		# Milling bit diameter in mm (to make corrections!)
 mbs_default = 0.25		# Milling bit step in mm
 mms_default = 250		# Milling movement speed
 sps_default = 1000		# Spindle speed
 tbs_default = 1.0		# Tab size in mm
+tgd_default = 0.0		# Tab groove depth in mm
 pct_default = 1.6		# PCB Thickness
 tbl_default = []		# Empty list
 
@@ -42,6 +43,9 @@ parser.add_argument('--sps',type=int,default=sps_default,
 
 parser.add_argument('--tbs',type=float,default=tbs_default,
                     help='Tab size in mm')
+
+parser.add_argument('--tgd',type=float,default=tgd_default,
+                    help='Tab groove depth in mm')
 
 parser.add_argument('--pct',type=float,default=pct_default,
                     help='PCB thickness in mm')
@@ -91,6 +95,7 @@ print("Milling bit step:      ",args.mbs)
 print("Milling movement speed:",args.mms)
 print("Spindle speed:         ",args.sps)
 print("Tab size:              ",args.tbs)
+print("Tab groove depth:      ",args.tgd)
 print("PCB thickness:         ",args.pct)
 print("Number of points:      ",len(args.pts))
 print("Tab segment list:      ",args.tbl)
@@ -113,6 +118,7 @@ segstbl = args.tbl
 spspeed = args.sps
 mmspeed = args.mms
 tabsize = args.tbs
+tabgroove = args.tgd
 
 #Startup code milling speed
 print(f"Writting CNC commands to dest file..")	
@@ -151,13 +157,25 @@ while zmill < pcbtick:
 				# direction of movement
 				if xa < xb:
 					print(f"G1 X{midx-(tabsize/2.0)-(mbitdia/2.0)} Y{ya}",file=fd)
-					print(f"G1 Z{1}",file=fd)
+					if tabgroove == 0.0:
+						print(f"G1 Z{1}",file=fd)
+					else :
+						if -1*zmill > -1*tabgroove :
+							print(f"G1 Z{-1*zmill}",file=fd)
+						else :
+							print(f"G1 Z{-1*tabgroove}",file=fd)								
 					print(f"G1 X{midx+(tabsize/2.0)+(mbitdia/2.0)} Y{ya}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
 				else:
 					print(f"G1 X{midx+(tabsize/2.0)+(mbitdia/2.0)} Y{ya}",file=fd)
-					print(f"G1 Z{1}",file=fd)
+					if tabgroove == 0.0:
+						print(f"G1 Z{1}",file=fd)
+					else :
+						if -1*zmill > -1*tabgroove :
+							print(f"G1 Z{-1*zmill}",file=fd)
+						else :
+							print(f"G1 Z{-1*tabgroove}",file=fd)								
 					print(f"G1 X{midx-(tabsize/2.0)-(mbitdia/2.0)} Y{ya}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
@@ -169,13 +187,26 @@ while zmill < pcbtick:
 				# direction of movement
 				if ya < yb:
 					print(f"G1 X{xa} Y{midy-(tabsize/2.0)-(mbitdia/2.0)}",file=fd)
-					print(f"G1 Z{1}",file=fd)
+					if tabgroove == 0.0:
+						print(f"G1 Z{1}",file=fd)
+					else :
+						if -1*zmill > -1*tabgroove :
+							print(f"G1 Z{-1*zmill}",file=fd)
+						else :
+							print(f"G1 Z{-1*tabgroove}",file=fd)								
 					print(f"G1 X{xa} Y{midy+(tabsize/2.0)+(mbitdia/2.0)}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)
 				else:
 					print(f"G1 X{xa} Y{midy+(tabsize/2.0)+(mbitdia/2.0)}",file=fd)
-					print(f"G1 Z{1}",file=fd)
+					if tabgroove == 0.0:
+						print(f"G1 Z{1}",file=fd)
+					else :
+						if -1*zmill > -1*tabgroove :
+							print(f"G1 Z{-1*zmill}",file=fd)
+						else :
+							print(f"G1 Z{-1*tabgroove}",file=fd)								
+
 					print(f"G1 X{xa} Y{midy-(tabsize/2.0)-(mbitdia/2.0)}",file=fd)
 					print(f"G1 Z{-1*zmill}",file=fd)
 					print(f"G1 X{xb} Y{yb}",file=fd)

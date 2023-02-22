@@ -14,7 +14,7 @@ python3 cncedgecut.py  --tbs 1.5 --mbd 1 --tbl 2 4 --dfi out.nc --pts -10.0 20.0
 
 ~~~
 usage: cncedgecut.py [-h] --pts PTS [PTS ...] --dfi DFI [--mbd MBD] [--mbs MBS] [--mms MMS] [--sps SPS]
-                     [--tbs TBS] [--pct PCT] [--tbl TBL [TBL ...]]
+                     [--tbs TBS] [--tgd TGD] [--pct PCT] [--tbl TBL [TBL ...]]
 
 Create CNC commands for cutting polygons in PCB boards
 
@@ -28,6 +28,7 @@ optional arguments:
   --mms MMS            Milling movement speed
   --sps SPS            Spindle rotation speed
   --tbs TBS            Tab size in mm
+  --tgd TGD            Tab groove depth in mm
   --pct PCT            PCB thickness in mm
   --tbl TBL [TBL ...]  List of segments where tabs wil be placed
 ~~~
