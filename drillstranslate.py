@@ -29,7 +29,6 @@ fdo = open(args.dfi.name, "w")
 
 print("Input file name:       ",args.ifi.name)
 print("Destination file name: ",args.dfi.name)
-print("Destination file name: ",args.dfi.name)
 print("Xmin:                  ",args.pts[0])
 print("Ymin:                  ",args.pts[1])
 print("Xmax:                  ",args.pts[2])
