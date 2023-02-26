@@ -9,10 +9,10 @@ mbd_default = 0.0		# Milling bit diameter in mm (to make corrections!)
 mbs_default = 0.25		# Milling bit step in mm
 mms_default = 250		# Milling movement speed
 sps_default = 1000		# Spindle speed
-tbs_default = 1.0		# Tab size in mm
-tgd_default = 0.0		# Tab groove depth in mm
+tbs_default = 1.0		# Tab size in mm (arc length)
+tgd_default = 0.0		# Tab groove depth in mm	(not working right now)
 pct_default = 1.6		# PCB Thickness
-tbn_default = 1			# Number of tabs
+tbn_default = 1			# Number of tabs (Only one tab working for now!)
 
 
 parser = argparse.ArgumentParser(description='Create CNC commands for cutting holes using helical pattern')
@@ -127,7 +127,7 @@ while i < seglistlength:
 	xstart = segmentlist[i][0]+segmentlist[i][2]+(mbitdia/2)
 	ystart = segmentlist[i][1]
 	radius = segmentlist[i][2]+(mbitdia/2)
-	tabanglerad = tabsize / radius	
+	tabanglerad = (tabsize+mbitdia) / radius	
 	#x = r(cos(degrees‎°)), y = r(sin(degrees‎°)).
 	#1st quadrant angle!!, doesn't work for tabs greater than 90 degrees
 	print(f"Radius:{radius}")
@@ -139,25 +139,24 @@ while i < seglistlength:
 	yenddelta = yendtmp 
 	xend = xstart - xenddelta		
 	yend = ystart + yenddelta
-	print(f"xendtmp:{xendtmp}")
-	print(f"yendtmp:{yendtmp}")
-		
-	print(f"xstart:{xstart}")
-	print(f"ystart:{ystart}")
-	print(f"xend:{xend}")
-	print(f"yend:{yend}")
+	
 	print(f"Segment:{i+1} X{segmentlist[i][0]} Y{segmentlist[i][1]} R{segmentlist[i][2]}")
-	print(f"tab angle rad:{tabanglerad}")
-	print(f"xend:{xend}")
-	print(f"yend:{yend}")
 	print(f"G1 Z1",file=fd)	
 		
 	zmill = 0.0;
 	while zmill < pcbtick:
-		print(f"G1 X{xstart} Y{ystart}",file=fd)		
-		print(f"G1 Z{-1.0*zmill}",file=fd)
+		print(f"G1 X{xstart} Y{ystart}",file=fd)				
+		print(f"G1 Z{-1.0*zmill}",file=fd)		
 		print(f"G2 X{xend} Y{yend} I{-1.0*radius}",file=fd)
-		print(f"G1 Z1",file=fd)			
+		if tabgroove == 0.0:
+			print(f"G1 Z1",file=fd)			
+		else :
+			if -1*zmill > -1*tabgroove :
+				print(f"G1 Z{-1*zmill}",file=fd)
+				print(f"G2 X{xstart} Y{ystart} I{-1.0*radius}",file=fd)
+			else :
+				print(f"G1 Z{-1*tabgroove}",file=fd)		
+				print(f"G2 X{xstart} Y{ystart} I{-1.0*radius}",file=fd)
 		zmill = zmill + zstep
 	i += 1	 
 	print(f"G1 Z1",file=fd)	
