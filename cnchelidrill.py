@@ -145,18 +145,18 @@ while i < seglistlength:
 		
 	zmill = 0.0;
 	while zmill < pcbtick:
-		print(f"G1 X{xstart} Y{ystart}",file=fd)				
+		print(f"G1 X{round(xstart,2)} Y{round(ystart,2)}",file=fd)				
 		print(f"G1 Z{-1.0*zmill}",file=fd)		
-		print(f"G2 X{xend} Y{yend} I{-1.0*radius}",file=fd)
+		print(f"G2 X{round(xend,2)} Y{round(yend,2)} I{-1.0*radius}",file=fd)
 		if tabgroove == 0.0:
 			print(f"G1 Z1",file=fd)			
 		else :
 			if -1*zmill > -1*tabgroove :
 				print(f"G1 Z{-1*zmill}",file=fd)
-				print(f"G2 X{xstart} Y{ystart} I{-1.0*radius}",file=fd)
+				print(f"G2 X{round(xstart,2)} Y{round(ystart,2)} I{-1.0*radius}",file=fd)
 			else :
 				print(f"G1 Z{-1*tabgroove}",file=fd)		
-				print(f"G2 X{xstart} Y{ystart} I{-1.0*radius}",file=fd)
+				print(f"G2 X{round(xstart,2)} Y{round(ystart,2)} I{-1.0*radius}",file=fd)
 		zmill = zmill + zstep
 	i += 1	 
 	print(f"G1 Z1",file=fd)	
