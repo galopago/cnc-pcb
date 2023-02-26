@@ -2,6 +2,7 @@
 
 
 import argparse
+import math
 
 #default values for optional parameters
 mbd_default = 0.0		# Milling bit diameter in mm (to make corrections!)
@@ -119,103 +120,47 @@ print(f"S{spspeed}",file=fd)
 print(f"G1 Z1",file=fd)	
 
 i = 0
-while i < seglistlength:	
-	print(f"Segment:{i}")
+while i < seglistlength:
+	if	tabnumber == 0 :
+		tabsize = 0.0	
+	
+	xstart = segmentlist[i][0]+segmentlist[i][2]+(mbitdia/2)
+	ystart = segmentlist[i][1]
+	radius = segmentlist[i][2]+(mbitdia/2)
+	tabanglerad = tabsize / radius	
+	#x = r(cos(degrees‎°)), y = r(sin(degrees‎°)).
+	#1st quadrant angle!!, doesn't work for tabs greater than 90 degrees
+	print(f"Radius:{radius}")
+	print(f"Circunference:{2*math.pi*radius}")
+	print(f"Angle in radians:{tabanglerad}")
+	xendtmp = math.cos(tabanglerad)*radius
+	yendtmp = math.sin(tabanglerad)*radius
+	xenddelta = radius - xendtmp 
+	yenddelta = yendtmp 
+	xend = xstart - xenddelta		
+	yend = ystart + yenddelta
+	print(f"xendtmp:{xendtmp}")
+	print(f"yendtmp:{yendtmp}")
+		
+	print(f"xstart:{xstart}")
+	print(f"ystart:{ystart}")
+	print(f"xend:{xend}")
+	print(f"yend:{yend}")
+	print(f"Segment:{i+1} X{segmentlist[i][0]} Y{segmentlist[i][1]} R{segmentlist[i][2]}")
+	print(f"tab angle rad:{tabanglerad}")
+	print(f"xend:{xend}")
+	print(f"yend:{yend}")
+	print(f"G1 Z1",file=fd)	
+		
 	zmill = 0.0;
 	while zmill < pcbtick:
-		print(f"G2 X{segmentlist[i][0]} Y{segmentlist[i][1]}")
+		print(f"G1 X{xstart} Y{ystart}",file=fd)		
+		print(f"G1 Z{-1.0*zmill}",file=fd)
+		print(f"G2 X{xend} Y{yend} I{-1.0*radius}",file=fd)
+		print(f"G1 Z1",file=fd)			
 		zmill = zmill + zstep
 	i += 1	 
-	
-while zmill < pcbtick:
-	#print(f"zmill:{zmill}")
-	i = 0
-	while i < seglistlength:
-
-		
-
-		
-		# searchig for tabs						
-		if tabnumber == 0 :
-			print(F"No tabs in segment {i+1}")					
-		else:
-			print(F"Found tags in segment {i+1}")	
-		
-		# searchig for a tab in this segment
-		if (i+1) in segstbl:
-			print(F"Tab in segment {i+1}")
-			# calculating tabs
-    
-			# Tab in horizontal line
-			if ya == yb:
-				midx = (xa + xb) / 2.0
-				print(f"G1 X{xa} Y{ya}",file=fd)
-				print(f"G1 Z{-1*zmill}",file=fd)
-				# direction of movement
-				if xa < xb:
-					print(f"G1 X{midx-(tabsize/2.0)-(mbitdia/2.0)} Y{ya}",file=fd)
-					if tabgroove == 0.0:
-						print(f"G1 Z{1}",file=fd)
-					else :
-						if -1*zmill > -1*tabgroove :
-							print(f"G1 Z{-1*zmill}",file=fd)
-						else :
-							print(f"G1 Z{-1*tabgroove}",file=fd)								
-					print(f"G1 X{midx+(tabsize/2.0)+(mbitdia/2.0)} Y{ya}",file=fd)
-					print(f"G1 Z{-1*zmill}",file=fd)
-					print(f"G1 X{xb} Y{yb}",file=fd)
-				else:
-					print(f"G1 X{midx+(tabsize/2.0)+(mbitdia/2.0)} Y{ya}",file=fd)
-					if tabgroove == 0.0:
-						print(f"G1 Z{1}",file=fd)
-					else :
-						if -1*zmill > -1*tabgroove :
-							print(f"G1 Z{-1*zmill}",file=fd)
-						else :
-							print(f"G1 Z{-1*tabgroove}",file=fd)								
-					print(f"G1 X{midx-(tabsize/2.0)-(mbitdia/2.0)} Y{ya}",file=fd)
-					print(f"G1 Z{-1*zmill}",file=fd)
-					print(f"G1 X{xb} Y{yb}",file=fd)
-			# Tab in vertical line
-			if xa == xb:
-				midy = (ya + yb) / 2.0
-				print(f"G1 X{xa} Y{ya}",file=fd)
-				print(f"G1 Z{-1*zmill}")
-				# direction of movement
-				if ya < yb:
-					print(f"G1 X{xa} Y{midy-(tabsize/2.0)-(mbitdia/2.0)}",file=fd)
-					if tabgroove == 0.0:
-						print(f"G1 Z{1}",file=fd)
-					else :
-						if -1*zmill > -1*tabgroove :
-							print(f"G1 Z{-1*zmill}",file=fd)
-						else :
-							print(f"G1 Z{-1*tabgroove}",file=fd)								
-					print(f"G1 X{xa} Y{midy+(tabsize/2.0)+(mbitdia/2.0)}",file=fd)
-					print(f"G1 Z{-1*zmill}",file=fd)
-					print(f"G1 X{xb} Y{yb}",file=fd)
-				else:
-					print(f"G1 X{xa} Y{midy+(tabsize/2.0)+(mbitdia/2.0)}",file=fd)
-					if tabgroove == 0.0:
-						print(f"G1 Z{1}",file=fd)
-					else :
-						if -1*zmill > -1*tabgroove :
-							print(f"G1 Z{-1*zmill}",file=fd)
-						else :
-							print(f"G1 Z{-1*tabgroove}",file=fd)								
-
-					print(f"G1 X{xa} Y{midy-(tabsize/2.0)-(mbitdia/2.0)}",file=fd)
-					print(f"G1 Z{-1*zmill}",file=fd)
-					print(f"G1 X{xb} Y{yb}",file=fd)
-																
-		else:		    		
-    		# NO tabs
-			print(f"G1 X{xa} Y{ya}",file=fd)
-			print(f"G1 Z{-1*zmill}",file=fd)
-			print(f"G1 X{xb} Y{yb}",file=fd)
-		i += 1	 
-	zmill = zmill + zstep
-
+	print(f"G1 Z1",file=fd)	
 #finishing going to origin and stop mill
 print(f"G1 Z1",file=fd)	
 print(f"G1 X0 Y0",file=fd)	
