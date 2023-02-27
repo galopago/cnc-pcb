@@ -124,9 +124,9 @@ while i < seglistlength:
 	if	tabnumber == 0 :
 		tabsize = 0.0	
 	
-	xstart = segmentlist[i][0]+segmentlist[i][2]+(mbitdia/2)
+	xstart = segmentlist[i][0]+(segmentlist[i][2]/2)-(mbitdia/2)
 	ystart = segmentlist[i][1]
-	radius = segmentlist[i][2]+(mbitdia/2)
+	radius = (segmentlist[i][2]/2)-(mbitdia/2)
 	tabanglerad = (tabsize+mbitdia) / radius	
 	#x = r(cos(degrees‎°)), y = r(sin(degrees‎°)).
 	#1st quadrant angle!!, doesn't work for tabs greater than 90 degrees
